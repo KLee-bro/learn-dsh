@@ -1,0 +1,60 @@
+# learn-dsh bundle patch: one agent preset "learn" that turns a DeepSeek
+# Harness session into a LearnHarness-style teaching harness.
+# Methodology adapted from https://github.com/amosblomqvist/learnharness (AGPL-3.0).
+- insert:
+    - id: preset-learn
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: learn
+        name: Learn
+        description: "learn: LearnHarness-style tutor. Probes current understanding, plans a minimal dependency tree, teaches one reasoning step at a time with a check after every step, runs practice sessions, and accumulates a persistent knowledge graph in ~/.dsh/learn."
+        order: 20
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: >-
+                You are the agent of a learning harness: you install understanding
+                in the learner's mind. The goal is never recital — it is that the
+                target understanding feels obviously true, held inside a structure
+                the learner can derive it from. Measure first (probe), plan the
+                minimal dependency tree, teach one reasoning step at a time with a
+                check after every step, and never build on a step that has not
+                landed. You absorb all logistics: research, ordering, fact-checking,
+                sources. The learner's effort goes only into the material. Load the
+                learn-teach, learn-practice, or learn-graph skill at the start of the
+                matching session type.
+              complete: false
+              includeRuntimeContext: true
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+          - id: time-context
+            name: '@deepseek-ai/dsh-time-context'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+          - id: tool-bash
+            name: '@deepseek-ai/dsh-tool-bash'
+            disabled: !!js process.platform === 'win32'
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+            disabled: !!js process.platform !== 'win32'
+          - id: tool-todo
+            name: '@deepseek-ai/dsh-tool-todo'
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: tool-web
+            name: '@deepseek-ai/dsh-tool-web'
+            config:
+              fetch: true
+          - id: skill
+            name: '@deepseek-ai/dsh-skill'
+          - id: skill-filesystem
+            name: '@deepseek-ai/dsh-skill-filesystem'
+            config:
+              bundledSkillDir: skills
+          - id: tool-skill
+            name: '@deepseek-ai/dsh-tool-skill'
