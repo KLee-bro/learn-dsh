@@ -182,46 +182,74 @@ python3 ~/.dsh/skills/learn-graph/scripts/learn_graph.py add-chain \
 
 ## 🔌 Why a plugin instead of using LearnHarness directly / 为什么做成插件，而不是直接用 LearnHarness
 
-**English.** LearnHarness is a **standalone Electron app**: its own chat UI, its
-own model-provider configuration, its own storage. If you already live inside
-DeepSeek Harness — your presets, tools (bash, web, filesystem, todos,
-sub-agents), settings and session history — adopting LearnHarness directly means
-rebuilding that life in a second app: re-configuring API keys, giving up your
-toolchain, keeping two chat histories.
+**English.** Picture your actual day. You're working in DeepSeek Harness: your
+coding sessions, your files, your web research, your API key — all already set
+up. Tonight you want to finally understand the transformer attention mechanism.
 
-This plugin takes LearnHarness's **actual asset** — the teaching methodology,
-distilled in its prompts and theory docs — and mounts it **inside the harness
-you already use**:
+**Using LearnHarness directly — the tax you pay:**
+
+1. Download and install a second Electron app (~200 MB).
+2. Open it. It knows nothing about you: configure a model provider again —
+   find the API key, paste it, pick models, run its setup wizard.
+3. Your lesson starts: "attach your notes" — but your notes live where you
+   work, in the other app; re-upload them.
+4. Mid-lesson it needs to fact-check something: it uses *its* search backend,
+   which needs *its* Tavily/Brave key — another key to hunt down.
+5. Done learning. Tomorrow morning you're back in DeepSeek Harness for work…
+   and to keep learning you must open the *other* window again. Your learning
+   history lives there, your work history here, keys configured in both places,
+   two apps to update.
+
+You adopted a method and paid for it with a **second life to maintain**.
+
+**The plugin path — what actually happens:** you copy 14 files, restart the
+harness, pick the `Learn` preset, and type "教我注意力机制". That's the whole
+migration. The lesson runs on your existing key, your existing permission
+presets; when it needs to fact-check, it uses the harness web tools you already
+configured; your PDF is read in place by the filesystem tools you already have;
+the knowledge graph lands in `~/.dsh/learn/` next to everything else. Next
+morning, work session and study session are windows of the same app.
+
+**中文。** 想象你真实的一天。你平时在 DeepSeek Harness 里工作：写代码、查资料、
+读文件，API key 早就配好了。今晚你想搞懂 Transformer 的注意力机制。
+
+**直接用 LearnHarness —— 你要交的"税"：**
+
+1. 下载安装第二个 Electron 应用（约 200 MB）。
+2. 打开它，它完全不认识你：重新配模型——找 API key、粘贴、选模型、跑它的引导流程。
+3. 上课时它说"把你的笔记拖进来"——可你的笔记在你工作的地方、另一个应用里，得重新上传。
+4. 课讲到一半它要核实一个事实：用的是*它自己的*搜索后端，需要*再配一个*
+   Tavily/Brave key——又去找一个密钥。
+5. 学完了。明天早上你回到 DeepSeek Harness 干活……想继续学习，又得再开另一个
+   窗口。学习记录在那边，工作记录在这边，key 配了两份，两个应用都要更新。
+
+你接受了一套方法，代价是**多养一个"第二人生"**。
+
+**插件路径 —— 实际发生的事：** 复制 14 个文件，重启 harness，preset 切到
+`Learn`，输入"教我注意力机制"。迁移到此结束。课跑在你现有的 key 和权限设置
+上；讲到一半要核实事实，用的是你早就配好的 harness web 工具；你的 PDF 原地被
+你已有的文件系统工具读取；知识图谱落在 `~/.dsh/learn/`，和其它数据挨在一起。
+第二天早上，工作会话和学习会话是同一个应用里的两个窗口。
+
+Then the general point, in one line each / 再把道理各用一句话说透：
 
 - **One environment.** Same models, keys, permission presets, and session
-  history you already have. Nothing to migrate.
-- **The harness's tools power the method.** Research during a lesson uses the
-  harness's web tools; reading your own PDFs uses its filesystem tools; the
-  graph lives next to your other harness data (`~/.dsh/`).
-- **Composable.** The teaching persona is a preset row + skills, so you can
-  cherry-pick: skills-only (zero prompt change, on-demand), full preset (always
-  a tutor), or copy fragments into your own presets.
-- **No second app to update, sign, notarize, or keep open.** It's a 14-file
-  declarative patch — read every line before you install it.
+  history you already have. Nothing to migrate. /
+  **一个环境。** 模型、key、权限、会话历史全是你现有的，零迁移。
+- **The harness's tools power the method.** Lesson research uses the harness's
+  web tools; your local PDFs are read in place by its filesystem tools; the
+  graph lives in `~/.dsh/`. / **harness 的工具为方法论供能。** 课上查资料用
+  harness 的 web 工具，本地 PDF 原地被文件系统工具读取，图谱就存在 `~/.dsh/`。
+- **Composable.** Cherry-pick: skills-only (on-demand, zero default change),
+  full preset (always a tutor), or copy fragments into your own presets. /
+  **可组合。** 只装技能（随叫随到）、整套 preset（永远当老师）、或把片段抄进
+  自己的 preset，随你挑。
+- **No second app.** It's 14 declarative files — read every line before you
+  install. No app to download, sign, update, or keep open. /
+  **没有第二个应用。** 14 个声明式文件，装前每行都能读完；没有应用要下载、签名、更新。
 
 In short: **direct use = adopting a new product; the plugin = injecting a
 method into the product you already chose.**
-
-**中文。** LearnHarness 是一个**独立的 Electron 应用**：自带聊天界面、自己的
-模型配置、自己的存储。如果你平时已经生活在 DeepSeek Harness 里——你的 preset、
-工具（bash、web、文件系统、todo、子代理）、会话历史都在这里——直接用
-LearnHarness 意味着在第二个应用里重建这套生活：重新配 API key、放弃现有工具链、
-维护两份聊天记录。
-
-这个插件拿走 LearnHarness **真正的资产**——凝结在其提示词和理论文档里的教学
-方法论——然后**装进你本来就在用的 harness**：
-
-- **一个环境。** 模型、key、权限、会话历史全是你现有的，零迁移。
-- **harness 的工具为方法论供能。** 课上查资料用 harness 的 web 工具，读你本地
-  的 PDF 用文件系统工具，图谱存在你其它 harness 数据旁边（`~/.dsh/`）。
-- **可组合。** 教学人格 = 一个 preset 行 + 三个 skill，可以拆开用：只装技能
-  （不改变默认行为，随叫随到）、整套 preset（永远当老师）、或把片段抄进你自己的 preset。
-- **没有第二个应用要安装、更新、签名。** 全部是 14 个文件的声明式补丁——装之前每一行都能读完。
 
 一句话：**直接用 = 接受一个新产品；用 plugin = 把一套方法注入你已经选定的产品。**
 
